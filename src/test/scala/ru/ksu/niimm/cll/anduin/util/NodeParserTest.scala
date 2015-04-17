@@ -3,13 +3,15 @@ package ru.ksu.niimm.cll.anduin.util
 import org.junit.runner.RunWith
 import org.specs.Specification
 import NodeParser._
-import org.scalatest.junit.JUnitRunner
+import org.specs.runner.{JUnitSuiteRunner, JUnit4}
 
 /**
  * @author Nikita Zhiltsov 
  */
-@RunWith(classOf[JUnitRunner])
-object NodeParserTest extends Specification {
+@RunWith(classOf[JUnitSuiteRunner])
+class NodeParserTest extends JUnit4(NodeParserTestSpec)
+
+object NodeParserTestSpec extends Specification {
   "Node parser" should {
     "extract nodes from n-quad" in {
       val line = "<http://eprints.rkbexplorer.com/id/caltech/eprints-7519> " +
