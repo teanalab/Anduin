@@ -15,6 +15,7 @@ class NamesProcessorTest extends JUnit4(NamesProcessorTestSpec)
 object NamesProcessorTestSpec extends Specification {
   "The names processor job" should {
     JobTest("ru.ksu.niimm.cll.anduin.description.NamesProcessor").
+      arg("inputFormat", "ntriple").
       arg("input", "inputFile").
       arg("output", "outputFile")
       .source(TextLine("inputFile"), List(

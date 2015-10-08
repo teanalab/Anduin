@@ -4,10 +4,14 @@ import com.twitter.scalding.{TextLine, Job, Args}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
 import com.twitter.scalding._
+
 /**
  * @author Nikita Zhiltsov 
  */
 class NamesProcessor(args: Args) extends Job(args) {
+  private val inputFormat = args("inputFormat")
+
+  val isNquad = inputFormat.equals("nquad")
 
   private val triples = TextLine(args("input")).read
     .filter('line) {
@@ -15,7 +19,13 @@ class NamesProcessor(args: Args) extends Job(args) {
       val cleanLine = line.trim
       cleanLine.startsWith("<")
   }
-    .mapTo('line ->('subject, 'predicate, 'object))(extractNodesFromN3)
+    .mapTo('line ->('subject, 'predicate, 'object)) {
+    line: String =>
+      if (isNquad) {
+        val nodes = extractNodes(line)
+        (nodes._2, nodes._3, nodes._4)
+      } else extractNodesFromN3(line)
+  }
 
   /**
    * filters first level entities with literal values
