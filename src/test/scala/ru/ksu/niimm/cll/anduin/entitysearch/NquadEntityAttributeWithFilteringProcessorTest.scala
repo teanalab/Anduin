@@ -85,10 +85,9 @@ object NquadEntityAttributeWithFilteringProcessorTestSpec extends Specification 
       sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
-          outputBuffer.size must_== 5
-          outputBuffer mustContain(NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\"")
+          outputBuffer.size must_== 4
+          outputBuffer mustContain(NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"No. 1 RNA researcher 1\" \"Researcher\"@en")
           outputBuffer mustContain(ATTRIBUTES, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"321\" \"123\"")
-          outputBuffer mustContain(ATTRIBUTES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "title \"Researcher\"@en")
           outputBuffer mustContain(CATEGORIES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "American physicists")
           outputBuffer mustContain(OUTGOING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"type\"@en Scientist redirect Caldwell High School \"Author\"@en")
         }

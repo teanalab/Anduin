@@ -79,29 +79,7 @@ object NodeParser {
     (subject, predicate, range.replace('\t', ' '))
   }
 
-  private val nameAttributes = Array("http://dbpedia.org/property/name",
-    "http://xmlns.com/foaf/0.1/name",
-    "http://xmlns.com/foaf/0.1/givenName",
-    "http://xmlns.com/foaf/0.1/surname",
-    "http://dbpedia.org/property/officialName",
-    "http://dbpedia.org/property/fullname",
-    "http://dbpedia.org/property/nativeName",
-    "http://dbpedia.org/property/birthName",
-    "http://dbpedia.org/property/alternativeNames",
-    "http://dbpedia.org/property/nickname",
-    "http://dbpedia.org/ontology/birthName",
-    "http://dbpedia.org/property/showName",
-    "http://dbpedia.org/property/companyName",
-    "http://dbpedia.org/property/shipName",
-    "http://dbpedia.org/ontology/formerName",
-    "http://dbpedia.org/property/clubname",
-    "http://dbpedia.org/property/unitName",
-    "http://dbpedia.org/property/otherName",
-    "http://dbpedia.org/ontology/iupacName",
-    "http://dbpedia.org/property/altNames",
-    "http://dbpedia.org/property/birthname",
-    "http://dbpedia.org/property/names",
-    "http://dbpedia.org/property/lakeName")
+  private val nameLikeAttributes = Array("label", "name", "title")
 
   private val labelAttributes = Array("http://www.w3.org/2000/01/rdf-schema#label",
     "http://www.w3.org/2004/02/skos/core#prefLabel")
@@ -122,7 +100,14 @@ object NodeParser {
    * @param predicate a predicate
    * @return
    */
-  def isNamePredicate(predicate: Predicate): Boolean = nameAttributes.contains(predicate)
+  def isNamePredicate(predicate: Predicate): Boolean = {
+    val pureURI = predicate.toLowerCase
+    val elements = if (pureURI.contains('#')) pureURI.split('#') else pureURI.split('/')
+    val relativePart = if (elements.length < 2) pureURI
+    else elements(elements.length - 1)
+
+    nameLikeAttributes.exists(s => relativePart.endsWith(s))
+  }
 
   def isLabelPredicate(predicate: Predicate): Boolean = labelAttributes.contains(predicate)
 
