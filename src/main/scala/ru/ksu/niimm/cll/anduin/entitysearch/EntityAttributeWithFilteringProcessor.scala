@@ -13,6 +13,7 @@ import cascading.pipe.joiner.LeftJoin
  * @author Nikita Zhiltsov
  */
 class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
+  val MAX_LINE_LENGTH = 100000
   /**
    * The predicates that should be excluded from the output here
    */
@@ -23,8 +24,8 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
 
   def isNquad = inputFormat.equals("nquad")
 
-  private val relevantPredicates =
-    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
+//  private val relevantPredicates =
+//    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
 
   private val entityNames =
     TypedTsv[(String, String)](args("entityNames")).read.rename((0, 1) ->('entityUri, 'names))
@@ -33,7 +34,7 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
     .filter('line) {
     line: String =>
       val cleanLine = line.trim
-      cleanLine.startsWith("<")
+      cleanLine.startsWith("<") && line.length < MAX_LINE_LENGTH
   }
     .mapTo('line ->('subject, 'predicate, 'object)) {
     line: String =>
@@ -43,13 +44,14 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
       } else extractNodesFromN3(line)
   }.filter('predicate) {
     predicate: Predicate => !blackListedPredicates.contains(predicate)
-  }
+  }.filter('object) {
+    range: Range => !range.contains("\"@") || range.contains("\"@en")
+  }.unique(('subject, 'predicate, 'object))
 
   /**
    * retains only relevant predicates
    */
-  private val filterGraph = firstLevelEntitiesWithoutBNodes
-    .joinWithTiny('predicate -> 'relPredicate, relevantPredicates).project(('subject, 'predicate, 'object))
+  private val filterGraph = firstLevelEntitiesWithoutBNodes.project(('subject, 'predicate, 'object))
     .filter('object) {
     range: Range => if (range.startsWith("\"") && !range.endsWith("\"")) range.endsWith("@en") else true
   }

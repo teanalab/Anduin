@@ -34,8 +34,6 @@ libraryDependencies += "org.apache.commons" % "commons-compress" % "1.4.1"
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.1"
 
-libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.0.9"
-
 libraryDependencies += "org.jsoup" % "jsoup" % "1.7.2"
 
 parallelExecution in Test := false

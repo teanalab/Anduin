@@ -43,7 +43,7 @@ class NamesProcessor(args: Args) extends Job(args) {
     .filter('predicatetype) {
     predicateType: Int => predicateType == NAMES
   }
-    .project(('subject, 'object))
+    .project(('subject, 'object)).unique(('subject,'object))
     .groupBy('subject) {
     _.mkString('object, " ")
   }

@@ -48,8 +48,12 @@ object NquadIdentityLinkProcessorTestSpec extends Specification with TupleConver
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 5
-          //          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
-          //            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 3\" \"person 2\" \"person 6\"")
+//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 3\"")
+//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 2\"")
+//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 6\"")
           outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
             "<http://eprints.rkbexplorer.com/id/caltech/person-3>", "\"person 1\"")
           outputBuffer mustContain(SIMILAR_ENTITY_NAMES,

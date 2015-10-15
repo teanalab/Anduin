@@ -16,6 +16,8 @@ import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
  * @author Nikita Zhiltsov 
  */
 class IdentityLinkProcessor(args: Args) extends Job(args) {
+  val MAX_LINE_LENGTH = 100000
+
   private val inputFormat = args("inputFormat")
 
   def isNquad = inputFormat.equals("nquad")
@@ -28,12 +30,15 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
       .filter('line) {
       line: String =>
         val cleanLine = line.trim
-        cleanLine.startsWith("<")
+        cleanLine.startsWith("<") && line.length < MAX_LINE_LENGTH
     }
       .mapTo('line ->('subject, 'predicate, 'object)) {
       line: String =>
         if (isNquad) extractTripleFromQuad(line) else extractNodesFromN3(line)
+    }.filter('object) {
+      range: Range => !range.contains("\"@") || range.contains("\"@en")
     }
+      .unique(('subject, 'predicate, 'object))
       .filter(('subject, 'object))(retainOnlyObjectLinks)
 
   private val sameAsLinks = firstLevelEntities.filter('predicate)(retainOnlySameAsLinks).project(('subject, 'object))
@@ -66,7 +71,8 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   private val mergedDescriptions = incomingSameAsAttributes ++ outgoingSameAsAttributes ++ outgoingDisambiguatesAttributes ++ incomingRedirectAttributes
 
-  mergedDescriptions.groupBy('subject) {
+  mergedDescriptions
+    .groupBy('subject) {
     _.mkString('names, " ")
   }
   .mapTo(('subject, 'names) -> ('predicatetype, 'subject, 'names)) {

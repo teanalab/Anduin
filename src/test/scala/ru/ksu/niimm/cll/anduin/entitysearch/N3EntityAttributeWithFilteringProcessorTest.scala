@@ -19,19 +19,19 @@ object N3EntityAttributeWithFilteringProcessorTestSpec extends Specification wit
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "n3").
-      arg("inputPredicates", "inputPredicatesFile").
+//      arg("inputPredicates", "inputPredicatesFile").
       arg("entityNames", "entityNamesFile")
-      .source(TypedTsv[(String, String)]("inputPredicatesFile"), List(
-      ("0", "<http://www.w3.org/2000/01/rdf-schema#label>"),
-      ("1", "<http://www.aktors.org/ontology/portal#value>"),
-      ("2", "<http://dbpedia.org/ontology/title>"),
-      ("3", "<http://dbpedia.org/ontology/office>"),
-      ("4", "<http://purl.org/dc/terms/subject>"),
-      ("5", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
-      ("6", "<http://www.aktors.org/ontology/portal#redirect>"),
-      ("7", DBPEDIA_WIKI_PAGE_WIKI_LINK),
-      ("8", "<http://www.aktors.org/ontology/portal#knows>")
-    ))
+//      .source(TypedTsv[(String, String)]("inputPredicatesFile"), List(
+//      ("0", "<http://www.w3.org/2000/01/rdf-schema#label>"),
+//      ("1", "<http://www.aktors.org/ontology/portal#value>"),
+//      ("2", "<http://dbpedia.org/ontology/title>"),
+//      ("3", "<http://dbpedia.org/ontology/office>"),
+//      ("4", "<http://purl.org/dc/terms/subject>"),
+//      ("5", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
+//      ("6", "<http://www.aktors.org/ontology/portal#redirect>"),
+//      ("7", DBPEDIA_WIKI_PAGE_WIKI_LINK),
+//      ("8", "<http://www.aktors.org/ontology/portal#knows>")
+//    ))
       .source(TypedTsv[(String, String)]("entityNamesFile"), List(
       ("<http://dbpedia.org/resource/Author>", "\"Author\"@en"),
       ("<http://dbpedia.org/resource/Category:American_physicists>", "American physicists"),
@@ -91,6 +91,15 @@ object N3EntityAttributeWithFilteringProcessorTestSpec extends Specification wit
       sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
+//          outputBuffer.size must_== 8
+//          outputBuffer mustContain(NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"''' No. 1 RNA researcher 1\"@en")
+//          outputBuffer mustContain(NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"Researcher\"@en")
+//          outputBuffer mustContain(ATTRIBUTES, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"321\"")
+//          outputBuffer mustContain(ATTRIBUTES, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"123\"")
+//          outputBuffer mustContain(CATEGORIES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "American physicists")
+//          outputBuffer mustContain(OUTGOING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"type\"@en Scientist")
+//          outputBuffer mustContain(OUTGOING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "redirect Caldwell High School")
+//          outputBuffer mustContain(OUTGOING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"Author\"@en")
           outputBuffer.size must_== 4
           outputBuffer mustContain(NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"''' No. 1 RNA researcher 1\"@en \"Researcher\"@en")
           outputBuffer mustContain(ATTRIBUTES, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"321\" \"123\"")
