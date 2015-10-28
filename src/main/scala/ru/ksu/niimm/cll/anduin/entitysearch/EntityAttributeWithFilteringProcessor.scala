@@ -24,8 +24,8 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
 
   def isNquad = inputFormat.equals("nquad")
 
-//  private val relevantPredicates =
-//    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
+  private val relevantPredicates =
+    TypedTsv[(String, String)](args("inputPredicates")).read.rename((0, 1) ->('relPredicateId, 'relPredicate))
 
   private val entityNames =
     TypedTsv[(String, String)](args("entityNames")).read.rename((0, 1) ->('entityUri, 'names))
@@ -51,7 +51,8 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
   /**
    * retains only relevant predicates
    */
-  private val filterGraph = firstLevelEntitiesWithoutBNodes.project(('subject, 'predicate, 'object))
+  private val filterGraph = firstLevelEntitiesWithoutBNodes
+    .joinWithTiny('predicate -> 'relPredicate, relevantPredicates).project(('subject, 'predicate, 'object))
     .filter('object) {
     range: Range => if (range.startsWith("\"") && !range.endsWith("\"")) range.endsWith("@en") else true
   }

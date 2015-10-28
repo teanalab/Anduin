@@ -19,19 +19,19 @@ object N3EntityAttributeWithFilteringProcessorTestSpec extends Specification wit
       arg("input", "inputFile").
       arg("output", "outputFile").
       arg("inputFormat", "n3").
-//      arg("inputPredicates", "inputPredicatesFile").
+      arg("inputPredicates", "inputPredicatesFile").
       arg("entityNames", "entityNamesFile")
-//      .source(TypedTsv[(String, String)]("inputPredicatesFile"), List(
-//      ("0", "<http://www.w3.org/2000/01/rdf-schema#label>"),
-//      ("1", "<http://www.aktors.org/ontology/portal#value>"),
-//      ("2", "<http://dbpedia.org/ontology/title>"),
-//      ("3", "<http://dbpedia.org/ontology/office>"),
-//      ("4", "<http://purl.org/dc/terms/subject>"),
-//      ("5", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
-//      ("6", "<http://www.aktors.org/ontology/portal#redirect>"),
-//      ("7", DBPEDIA_WIKI_PAGE_WIKI_LINK),
-//      ("8", "<http://www.aktors.org/ontology/portal#knows>")
-//    ))
+      .source(TypedTsv[(String, String)]("inputPredicatesFile"), List(
+      ("0", "<http://www.w3.org/2000/01/rdf-schema#label>"),
+      ("1", "<http://www.aktors.org/ontology/portal#value>"),
+      ("2", "<http://dbpedia.org/ontology/title>"),
+      ("3", "<http://dbpedia.org/ontology/office>"),
+      ("4", "<http://purl.org/dc/terms/subject>"),
+      ("5", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"),
+      ("6", "<http://www.aktors.org/ontology/portal#redirect>"),
+      ("7", DBPEDIA_WIKI_PAGE_WIKI_LINK),
+      ("8", "<http://www.aktors.org/ontology/portal#knows>")
+    ))
       .source(TypedTsv[(String, String)]("entityNamesFile"), List(
       ("<http://dbpedia.org/resource/Author>", "\"Author\"@en"),
       ("<http://dbpedia.org/resource/Category:American_physicists>", "American physicists"),
