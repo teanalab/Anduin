@@ -47,13 +47,13 @@ object NquadIdentityLinkProcessorTestSpec extends Specification with TupleConver
       sink[(Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)](Tsv("outputFile")) {
       outputBuffer =>
         "output the correct entity descriptions" in {
-          outputBuffer.size must_== 5
-//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
-//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 3\"")
-//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
-//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 2\"")
-//          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
-//            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 6\"")
+          outputBuffer.size must_== 7
+          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 3\"")
+          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 2\"")
+          outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
+            "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"person 6\"")
           outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
             "<http://eprints.rkbexplorer.com/id/caltech/person-3>", "\"person 1\"")
           outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
@@ -63,14 +63,14 @@ object NquadIdentityLinkProcessorTestSpec extends Specification with TupleConver
           outputBuffer mustContain(SIMILAR_ENTITY_NAMES,
             "<http://eprints.rkbexplorer.com/id/caltech/person-5>", "\"person 1\"")
 
-          outputBuffer mustExist(isValidTuple)
+//          outputBuffer mustExist(isValidTuple)
         }
     }.run.
       finish
   }
 
-  def isValidTuple: ((Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)) => Boolean = tuple =>
-    tuple._1 == SIMILAR_ENTITY_NAMES &&
-      tuple._2.equals("<http://eprints.rkbexplorer.com/id/caltech/person-1>") && tuple._3.split("\"").contains("person 3") &&
-      tuple._3.split("\"").contains("person 2") && tuple._3.split("\"").contains("person 6")
+//  def isValidTuple: ((Int, Subject, ru.ksu.niimm.cll.anduin.util.NodeParser.Range)) => Boolean = tuple =>
+//    tuple._1 == SIMILAR_ENTITY_NAMES &&
+//      tuple._2.equals("<http://eprints.rkbexplorer.com/id/caltech/person-1>") && tuple._3.split("\"").contains("person 3") &&
+//      tuple._3.split("\"").contains("person 2") && tuple._3.split("\"").contains("person 6")
 }

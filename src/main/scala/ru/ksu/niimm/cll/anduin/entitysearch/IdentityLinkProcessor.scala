@@ -17,6 +17,7 @@ import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
  */
 class IdentityLinkProcessor(args: Args) extends Job(args) {
   val MAX_LINE_LENGTH = 100000
+  val GEO_TO_WIKI_PREDICATE = "http://www.geonames.org/ontology#wikipediaArticle"
 
   private val inputFormat = args("inputFormat")
 
@@ -47,6 +48,8 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   private val redirectLinks = firstLevelEntities.filter('predicate)(retainOnlyRedirectLinks).project(('subject, 'object))
 
+  private val geoToWikiLinks = firstLevelEntities.filter('predicate)(retainOnlyGeoToWikiLinks).project(('subject, 'object))
+
   private val outgoingSameAsAttributes = sameAsLinks.joinWithLarger(('object -> 'entityUri), entityNames)
     .project(('subject, 'names))
 
@@ -59,6 +62,9 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
   private val outgoingDisambiguatesAttributes = disambiguatesLinks.joinWithLarger(('object -> 'entityUri), entityNames)
     .project(('subject, 'names))
 
+  private val outgoingGeoToWikiAttributes = geoToWikiLinks.joinWithLarger(('object -> 'entityUri), entityNames)
+    .project(('subject, 'names))
+
   private def retainOnlyObjectLinks(fields: (Subject, Range)): Boolean = fields match {
     case (subject, range) => subject.startsWith("<") && range.startsWith("<")
   }
@@ -69,12 +75,14 @@ class IdentityLinkProcessor(args: Args) extends Job(args) {
 
   private def retainOnlyRedirectLinks(predicate: Predicate): Boolean = predicate.equals(DBPEDIA_REDIRECT_PREDICATE)
 
-  private val mergedDescriptions = incomingSameAsAttributes ++ outgoingSameAsAttributes ++ outgoingDisambiguatesAttributes ++ incomingRedirectAttributes
+  private def retainOnlyGeoToWikiLinks(predicate: Predicate): Boolean = predicate.equals(GEO_TO_WIKI_PREDICATE)
+
+  private val mergedDescriptions = incomingSameAsAttributes ++ outgoingSameAsAttributes ++ outgoingDisambiguatesAttributes ++ incomingRedirectAttributes ++ outgoingGeoToWikiAttributes
 
   mergedDescriptions
-    .groupBy('subject) {
-    _.mkString('names, " ")
-  }
+//    .groupBy('subject) {
+//    _.mkString('names, " ")
+//  }
   .mapTo(('subject, 'names) -> ('predicatetype, 'subject, 'names)) {
     fields: (Subject, Range) =>
       (SIMILAR_ENTITY_NAMES, fields._1, fields._2)
