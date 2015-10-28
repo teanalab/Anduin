@@ -90,7 +90,16 @@ object NodeParser {
   "http://dbpedia.org/ontology/office",
   "http://dbpedia.org/property/type")
 
-  private val categoryAttributes = Array("http://purl.org/dc/terms/subject")
+  private val categoryAttributes = Array("http://purl.org/dc/terms/subject",
+  "http://www.w3.org/2004/02/skos/core#subject",
+  "http://dbpedia.org/property/wordnet_type",
+  "http://www.w3.org/2004/02/skos/core#broader", // not sure about this
+  "http://dbpedia.org/property/genre", // not sure
+  "http://dbpedia.org/ontology/genre", // not sure
+  "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+  "http://dbpedia.org/ontology/type",
+  "http://dbpedia.org/property/type"
+  )
 
   private val typeAttributes = Array("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
 
