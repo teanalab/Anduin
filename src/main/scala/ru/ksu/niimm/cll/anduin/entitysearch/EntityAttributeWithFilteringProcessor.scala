@@ -81,9 +81,9 @@ class EntityAttributeWithFilteringProcessor(args: Args) extends Job(args) {
   }
 
   allAttributes
-    .groupBy(('subject, 'predicatetype)) {
-    _.mkString('object, " ")
-  }
+//    .groupBy(('subject, 'predicatetype)) {
+//    _.mkString('object, " ")
+//  }
     .map('object -> 'object) {
     range: Range =>
       cleanHTMLMarkup(range)
