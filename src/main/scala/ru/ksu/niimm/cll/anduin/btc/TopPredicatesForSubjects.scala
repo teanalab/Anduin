@@ -37,9 +37,14 @@ class TopPredicatesForSubjects(args: Args) extends Job(args) {
 
   val subjects = TextLine(args("subjects")).read.rename('line -> 'subject)
 
-  triples.joinWithTiny('subject -> 'subject, subjects).groupBy('predicate) {
+  val filteredTriples = triples.joinWithTiny('subject -> 'subject, subjects)
+
+  val predCount = filteredTriples.groupBy('predicate) {
     _.size('count)
-  }.groupAll {
-    _.sortBy(('count, 'predicate)).reverse
-  }.project(('count, 'predicate)).write(Tsv(args("output")))
+  }
+
+  filteredTriples.joinWithSmaller('predicate -> 'predicate, predCount)
+    .groupAll {
+    _.sortBy(('count, 'predicate, 'subject, 'object)).reverse
+  }.project(('count, 'predicate, 'subject, 'object)).write(Tsv(args("output")))
 }
