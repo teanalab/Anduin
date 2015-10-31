@@ -10,6 +10,11 @@ import ru.ksu.niimm.cll.anduin.util.NodeParser._
  */
 class FirstLevelEntityProcessor(args: Args) extends Job(args) {
   val MAX_LINE_LENGTH = 100000
+
+  private val inputFormat = args("inputFormat")
+
+  def isNquad = inputFormat.equals("nquad")
+
   /**
    * filters out too long lines and reads the context-subject-predicate-object quads
    */
@@ -18,8 +23,12 @@ class FirstLevelEntityProcessor(args: Args) extends Job(args) {
     line: String =>
       line.length < MAX_LINE_LENGTH
   }
-    .mapTo('line ->('context, 'subject, 'predicate, 'object)) {
-    line: String => extractNodes(line)
+    .mapTo('line ->('subject, 'predicate, 'object)) {
+    line: String =>
+      if (isNquad) {
+        val nodes = extractNodes(line)
+        (nodes._2, nodes._3, nodes._4)
+      } else extractNodesFromN3(line)
   }.project(('subject, 'predicate, 'object))
   /**
    * filters out non-English literals
