@@ -24,4 +24,8 @@ object PredicateGroupCodes {
     * names from outgoing links
     */
    val OUTGOING_ENTITY_NAMES = 4
+   /**
+    * names from incoming links
+    */
+   val INCOMING_ENTITY_NAMES = 5
  }
