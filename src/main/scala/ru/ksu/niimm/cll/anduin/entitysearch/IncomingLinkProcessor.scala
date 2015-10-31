@@ -3,6 +3,7 @@ package ru.ksu.niimm.cll.anduin.entitysearch
 import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
+import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
 
 /**
  * This processor resolves incoming links in entity descriptions
@@ -31,7 +32,7 @@ class IncomingLinkProcessor(args: Args) extends Job(args) {
     .joinWithSmaller(('subject -> 'subject2), secondLevelEntities, joiner = new LeftJoin)
     .mapTo(('subject, 'object, 'subject2, 'object2) -> ('predicatetype, 'subject,'object)) {
     fields: (Subject, Range, Subject, Range) =>
-      if (fields._4 == null) (3, fields._2, stripURI(fields._1).mkString("\"", "", "\"")) else (3, fields._2, fields._4)
+      if (fields._4 == null) (INCOMING_ENTITY_NAMES, fields._2, stripURI(fields._1).mkString("\"", "", "\"")) else (INCOMING_ENTITY_NAMES, fields._2, fields._4)
   }
     .write(Tsv(args("output")))
 }
