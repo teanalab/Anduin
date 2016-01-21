@@ -5,6 +5,7 @@ import com.twitter.scalding._
 import org.specs.runner.JUnit4
 import ru.ksu.niimm.cll.anduin.util.NodeParser.Range
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
+import ru.ksu.niimm.cll.anduin.util.PredicateGroupCodes._
 
 /**
  * @author Nikita Zhiltsov
@@ -34,9 +35,9 @@ object IncomingLinkProcessorTestSpec extends Specification with TupleConversions
       outputBuffer =>
         "output the correct entity descriptions" in {
           outputBuffer.size must_== 3
-          outputBuffer mustContain(3, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"No. 1 RNA researcher 1\"")
-          outputBuffer mustContain(3, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"eprints\"")
-          outputBuffer mustContain(3, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"person\"")
+          outputBuffer mustContain(INCOMING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-2>", "\"No. 1 RNA researcher 1\"")
+          outputBuffer mustContain(INCOMING_ENTITY_NAMES, "<http://eprints.rkbexplorer.com/id/caltech/person-1>", "\"eprints\"")
+          outputBuffer mustContain(INCOMING_ENTITY_NAMES, "<http://dbpedia.org/resource/Caldwell_High_School_(Caldwell,_Texas)>", "\"person\"")
         }
     }.run.
       finish
