@@ -1,6 +1,7 @@
 package ru.ksu.niimm.cll.anduin.entitysearch
 
-import com.twitter.scalding.{Tsv, TypedTsv, Job, Args}
+import com.twitter.scalding._
+import ru.ksu.niimm.cll.anduin.util.NodeParser.Range
 import ru.ksu.niimm.cll.anduin.util.NodeParser._
 import cascading.pipe.joiner.{LeftJoin, InnerJoin}
 
@@ -10,8 +11,24 @@ import cascading.pipe.joiner.{LeftJoin, InnerJoin}
  * @author Nikita Zhiltsov 
  */
 class IncomingLinkProcessor(args: Args) extends Job(args) {
+  val MAX_LINE_LENGTH = 100000
+  private val inputFormat = args("inputFormat")
+  def isNquad = inputFormat.equals("nquad")
+
   private val firstLevelEntities =
-    TypedTsv[(Subject, Predicate, Range)](args("inputFirstLevel")).read.rename((0, 1, 2) ->('subject, 'predicate, 'object))
+    TextLine(args("inputFirstLevel")).read
+      .filter('line) {
+        line: String =>
+          val cleanLine = line.trim
+          cleanLine.startsWith("<") && line.length < MAX_LINE_LENGTH
+      }
+      .mapTo('line ->('subject, 'predicate, 'object)) {
+        line: String =>
+          if (isNquad) {
+            val nodes = extractNodes(line)
+            (nodes._2, nodes._3, nodes._4)
+          } else extractNodesFromN3(line)
+      }
       .project(('subject, 'object))
       .filter(('subject, 'object)) {
       fields: (Subject, Range) => fields._1.startsWith("<") && fields._2.startsWith("<")
